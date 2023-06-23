@@ -1,0 +1,13 @@
+name: ansible-devenvtest
+channels:
+  - defaults
+dependencies:
+  - pip
+  - pip:
+      - ansible-compat
+      - ansible-core
+      - ansible-lint
+      - ansible
+      - molecule
+      - molecule-plugins
+      - yamllint
