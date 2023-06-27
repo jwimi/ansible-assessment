@@ -1,0 +1,57 @@
+--- 
+- name: setup Nginx # hier konnte ich diese auch in 3 Tasks aufspalten: firewall Konfiguration, Nginx Install und Config und Index-Template
+  hosts: webserver
+  become: true
+  tasks:
+    - name: Open port 80 for http access
+      become: true
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+      register: firewall_setting
+
+    - name: Restart the firewalld service to load in the firewall changes
+      become: true
+      service:
+        name: firewalld
+        state: restarted
+      when: firewall_setting.changed
+
+    - name: Install packages for nginx and ensure nginx is at the latest version
+      become: true
+      package:
+        name: nginx
+        state: latest
+		
+    - name: start nginx
+      become: true
+      service: 
+        name: nginx
+        state: started
+        enabled: yes
+		
+     - name: Make sure nginx is started
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+      register: result
+
+    - name: Show result
+      debug:
+        msg: "{{ result }}"	
+
+    - name: Create default page
+      become: true
+      template:
+        src: index.html.j2
+        dest: "{{ nginx_root }}/index.html"
+      register: indexfile
+
+    - name: Restart nginx service
+      become: true
+      service:
+        name: nginx
+        state: restarted
+      when: indexfile.changed or stylesheet.changed
