@@ -1,0 +1,13 @@
+---
+- name: install htop
+- hosts: webserver
+  tasks:
+    - name: "apt update"
+      apt:
+        update_cache: "yes"
+    - name: "apt upgrade"
+      apt:
+        upgrade: "safe"
+    - name: "apt autoclean"
+      apt:
+        autoclean: "yes"
