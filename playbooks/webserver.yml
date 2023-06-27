@@ -1,3 +1,20 @@
 ---
-
-# your code goes here
+- name: Webserver Installation
+  hosts: webserver
+  vars:
+    greeting: Herzlich Willkommen
+  become: true
+  tasks:
+   - name: upgrade hosts 
+      include_role:
+        name: ../roles/apt_upgrade_hosts
+    - name: install htop 
+      include_role:
+        name: ../roles/setup_htop               
+    - name: install tmux
+      include_role:
+        name: ../roles/setup_tmux  
+    - name: install Nginx
+      include_role:
+        name: ../roles/setup_Nginx
+      
